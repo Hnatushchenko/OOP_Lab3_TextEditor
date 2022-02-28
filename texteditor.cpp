@@ -6,6 +6,23 @@ TextEditor::TextEditor(QWidget *parent)
     , ui(new Ui::TextEditor)
 {
     ui->setupUi(this);
+
+    QAction *_new = new QAction("New", this);
+    QAction *open = new QAction("Open…", this);
+    QAction *save = new QAction("Save", this);
+    QAction *saveAs = new QAction("Save As…", this);
+    QAction *exit = new QAction("Exit", this);
+
+    connect(exit, &QAction::triggered, this, &QApplication::quit);
+
+    QMenu *file = menuBar()->addMenu("File");
+    file->addAction(_new);
+    file->addAction(open);
+    file->addAction(save);
+    file->addAction(saveAs);
+    file->addSeparator();
+    file->addAction(exit);
+
 }
 
 TextEditor::~TextEditor()
