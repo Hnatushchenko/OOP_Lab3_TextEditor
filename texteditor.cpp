@@ -38,7 +38,18 @@ TextEditor::TextEditor(QWidget *parent)
 void TextEditor::OpenFile()
 {
     openedFileName = QFileDialog::getOpenFileName(this, "Opening", "C:\\");
-    TextEdit->setPlainText("file name: " + openedFileName);
+
+    QFile file(openedFileName);
+    if(!file.open(QFile::ReadOnly))
+    {
+        //QMessageBox::warning(this, "Warning", "Can't open the file: " + openedFileName);
+        return;
+    }
+
+    QTextStream inStream(&file);
+    QString fileText = inStream.readAll();
+
+    TextEdit->setPlainText(fileText);
 }
 
 TextEditor::~TextEditor()
