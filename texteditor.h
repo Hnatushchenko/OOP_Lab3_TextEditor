@@ -8,6 +8,8 @@
 #include <QPlainTextEdit>
 #include <QVBoxLayout>
 #include <QFileDialog>
+#include <QTextStream>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class TextEditor; }
@@ -26,7 +28,6 @@ private:
 
 
     Ui::TextEditor *ui;
-
     QPlainTextEdit * TextEdit;
 
 private slots:
