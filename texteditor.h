@@ -7,6 +7,7 @@
 #include <QMenuBar>
 #include <QPlainTextEdit>
 #include <QVBoxLayout>
+#include <QFileDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class TextEditor; }
@@ -21,8 +22,14 @@ public:
     ~TextEditor();
 
 private:
+    QString openedFileName;
+
+
     Ui::TextEditor *ui;
 
     QPlainTextEdit * TextEdit;
+
+private slots:
+    void OpenFile();
 };
 #endif // TEXTEDITOR_H

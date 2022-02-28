@@ -14,6 +14,7 @@ TextEditor::TextEditor(QWidget *parent)
     QAction *exit = new QAction("Exit", this);
 
     connect(exit, &QAction::triggered, this, &QApplication::quit);
+    connect(open, &QAction::triggered, this, &TextEditor::OpenFile);
 
     QMenu *file = menuBar()->addMenu("File");
     file->addAction(_new);
@@ -32,6 +33,12 @@ TextEditor::TextEditor(QWidget *parent)
     QWidget *centralWidget = new QWidget;
     centralWidget->setLayout(vbox);
     setCentralWidget(centralWidget);
+}
+
+void TextEditor::OpenFile()
+{
+    openedFileName = QFileDialog::getOpenFileName(this, "Opening", "C:\\");
+    TextEdit->setPlainText("file name: " + openedFileName);
 }
 
 TextEditor::~TextEditor()
