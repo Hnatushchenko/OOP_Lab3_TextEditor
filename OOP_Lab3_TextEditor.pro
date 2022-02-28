@@ -18,6 +18,8 @@ HEADERS += \
 FORMS += \
     texteditor.ui
 
+RC_ICONS = notepad.ico
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

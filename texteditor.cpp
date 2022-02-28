@@ -23,6 +23,15 @@ TextEditor::TextEditor(QWidget *parent)
     file->addSeparator();
     file->addAction(exit);
 
+    QVBoxLayout *vbox = new QVBoxLayout(this);
+
+    TextEdit = new QPlainTextEdit(this);
+
+    vbox->addWidget(TextEdit);
+
+    QWidget *centralWidget = new QWidget;
+    centralWidget->setLayout(vbox);
+    setCentralWidget(centralWidget);
 }
 
 TextEditor::~TextEditor()

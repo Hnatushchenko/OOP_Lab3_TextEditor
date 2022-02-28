@@ -2,8 +2,11 @@
 #define TEXTEDITOR_H
 
 #include <QMainWindow>
+#include <QWidget>
 #include <QMenu>
 #include <QMenuBar>
+#include <QPlainTextEdit>
+#include <QVBoxLayout>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class TextEditor; }
@@ -19,5 +22,7 @@ public:
 
 private:
     Ui::TextEditor *ui;
+
+    QPlainTextEdit * TextEdit;
 };
 #endif // TEXTEDITOR_H
