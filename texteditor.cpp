@@ -13,6 +13,7 @@ TextEditor::TextEditor(QWidget *parent)
     QAction *saveAs = new QAction("Save As…", this);
     QAction *exit = new QAction("Exit", this);
 
+    connect(_new, &QAction::triggered, this, &TextEditor::newFile);
     connect(exit, &QAction::triggered, this, &QApplication::quit);
     connect(open, &QAction::triggered, this, &TextEditor::OpenFile);
 
@@ -51,6 +52,11 @@ void TextEditor::OpenFile()
 
     TextEdit->setPlainText(fileText);
     file.close();
+}
+
+void TextEditor::newFile()
+{
+
 }
 
 TextEditor::~TextEditor()

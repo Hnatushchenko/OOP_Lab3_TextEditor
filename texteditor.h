@@ -32,5 +32,6 @@ private:
 
 private slots:
     void OpenFile();
+    void newFile();
 };
 #endif // TEXTEDITOR_H
