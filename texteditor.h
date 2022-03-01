@@ -10,6 +10,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QDir>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class TextEditor; }
@@ -24,13 +25,16 @@ public:
     ~TextEditor();
 
 private:
+    QString openedFilePath;
     QString openedFileName;
-
+    QString initialFileText;
 
     Ui::TextEditor *ui;
     QPlainTextEdit * TextEdit;
 
 private slots:
     void OpenFile();
+    void saveFile();
+    void textChanged();
 };
 #endif // TEXTEDITOR_H
