@@ -73,9 +73,9 @@ void TextEditor::saveFile()
     }
 
     QFile file(openedFilePath);
+
     if(!file.open(QFile::WriteOnly))
     {
-        //QMessageBox::warning(this, "Warning", "Can't open the file: " + openedFilePath);
         return;
     }
 
@@ -103,7 +103,48 @@ void TextEditor::textChanged()
 
 void TextEditor::newFile()
 {
+    if(TextEdit->toPlainText() != initialFileText)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Text Editor");
+        msgBox.setText("The document has been modified.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
 
+        switch(ret)
+        {
+        case QMessageBox::Cancel:
+            return;
+
+        case QMessageBox::Save:
+            if(openedFilePath.isEmpty())
+            {
+                openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath());
+            }
+
+            QFile file(openedFilePath);
+
+            if(!file.open(QFile::WriteOnly))
+            {
+                return;
+            }
+
+            QTextStream outStream(&file);
+            outStream << TextEdit->toPlainText();
+
+            file.close();
+            break;
+        }
+    }
+
+    openedFilePath = "";
+    openedFileName = "new";
+    TextEdit->setPlainText("");
+    initialFileText = "";
+
+    this->setWindowTitle(openedFileName + ": Text Editor");
 }
 
 TextEditor::~TextEditor()
