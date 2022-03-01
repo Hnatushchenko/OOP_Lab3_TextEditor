@@ -31,7 +31,7 @@ TextEditor::TextEditor(QWidget *parent)
     QVBoxLayout *vbox = new QVBoxLayout(this);
 
 
-
+    connect(_new, &QAction::triggered, this, &TextEditor::newFile);
     connect(open, &QAction::triggered, this, &TextEditor::OpenFile);
     connect(save, &QAction::triggered, this, &TextEditor::saveFile);
     connect(exit, &QAction::triggered, this, &QApplication::quit);
@@ -99,6 +99,10 @@ void TextEditor::textChanged()
     {
         this->setWindowTitle(openedFileName + ": Text Editor");
     }
+}
+
+void TextEditor::newFile()
+{
 
 }
 

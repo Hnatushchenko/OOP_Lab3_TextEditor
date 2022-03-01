@@ -36,5 +36,6 @@ private slots:
     void OpenFile();
     void saveFile();
     void textChanged();
+    void newFile();
 };
 #endif // TEXTEDITOR_H
