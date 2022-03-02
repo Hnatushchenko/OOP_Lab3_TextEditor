@@ -8,7 +8,12 @@ TextEditor::TextEditor(QWidget *parent)
     ui->setupUi(this);
 
     openedFileName = "new";
+
+    QFont TextEditFont("Lucida Console, Regular");
+    TextEditFont.setPixelSize(19);
+
     TextEdit = new QPlainTextEdit(this);
+    TextEdit->setFont(TextEditFont);
 
     QAction *_new = new QAction("New", this);
     QAction *open = new QAction("Open…", this);

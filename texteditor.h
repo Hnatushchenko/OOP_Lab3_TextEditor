@@ -11,6 +11,7 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QDir>
+#include <QFont>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class TextEditor; }
