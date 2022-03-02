@@ -36,6 +36,7 @@ private:
 private slots:
     void OpenFile();
     void saveFile();
+    void saveAs();
     void textChanged();
     void newFile();
 };

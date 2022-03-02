@@ -35,10 +35,10 @@ TextEditor::TextEditor(QWidget *parent)
 
     QVBoxLayout *vbox = new QVBoxLayout(this);
 
-
     connect(_new, &QAction::triggered, this, &TextEditor::newFile);
     connect(open, &QAction::triggered, this, &TextEditor::OpenFile);
     connect(save, &QAction::triggered, this, &TextEditor::saveFile);
+    connect(saveAs, &QAction::triggered, this, &TextEditor::saveAs);
     connect(exit, &QAction::triggered, this, &QApplication::quit);
     connect(TextEdit, &QPlainTextEdit::textChanged, this, &TextEditor::textChanged);
 
@@ -94,6 +94,26 @@ void TextEditor::saveFile()
     file.close();
 }
 
+void TextEditor::saveAs()
+{
+    openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath());
+
+    QFile file(openedFilePath);
+    if(!file.open(QFile::WriteOnly))
+    {
+        return;
+    }
+
+    openedFileName = QFileInfo(openedFilePath).fileName();
+    QTextStream outStream(&file);
+
+    initialFileText = TextEdit->toPlainText();
+    outStream << initialFileText;
+    this->setWindowTitle(openedFileName + ": Text Editor");
+
+    file.close();
+}
+
 void TextEditor::textChanged()
 {
     if(TextEdit->toPlainText() != initialFileText)
@@ -104,6 +124,7 @@ void TextEditor::textChanged()
     {
         this->setWindowTitle(openedFileName + ": Text Editor");
     }
+
 }
 
 void TextEditor::newFile()
