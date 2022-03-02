@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QFont>
+#include <QFontDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class TextEditor; }
@@ -39,5 +40,7 @@ private slots:
     void saveAs();
     void textChanged();
     void newFile();
+
+    void changeFont();
 };
 #endif // TEXTEDITOR_H

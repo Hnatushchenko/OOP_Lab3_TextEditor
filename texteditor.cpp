@@ -21,6 +21,8 @@ TextEditor::TextEditor(QWidget *parent)
     QAction *saveAs = new QAction("Save As…", this);
     QAction *exit = new QAction("Exit", this);
 
+    QAction *font = new QAction("Font…", this);
+
     _new->setShortcut(tr("CTRL+N"));
     open->setShortcut(tr("CTRL+O"));
     save->setShortcut(tr("CTRL+S"));
@@ -33,6 +35,9 @@ TextEditor::TextEditor(QWidget *parent)
     file->addSeparator();
     file->addAction(exit);
 
+    QMenu *format = menuBar()->addMenu("Format");
+    format->addAction(font);
+
     QVBoxLayout *vbox = new QVBoxLayout(this);
 
     connect(_new, &QAction::triggered, this, &TextEditor::newFile);
@@ -42,6 +47,8 @@ TextEditor::TextEditor(QWidget *parent)
     connect(exit, &QAction::triggered, this, &QApplication::quit);
     connect(TextEdit, &QPlainTextEdit::textChanged, this, &TextEditor::textChanged);
 
+    connect(font, &QAction::triggered, this, &TextEditor::changeFont);
+
     vbox->addWidget(TextEdit);
     QWidget *centralWidget = new QWidget;
     centralWidget->setLayout(vbox);
@@ -50,7 +57,7 @@ TextEditor::TextEditor(QWidget *parent)
 
 void TextEditor::OpenFile()
 {
-    openedFilePath = QFileDialog::getOpenFileName(this, "Opening", QDir::homePath());
+    openedFilePath = QFileDialog::getOpenFileName(this, "Opening", QDir::homePath(), "Text files (*.txt)");
 
     QFile file(openedFilePath);
     if(!file.open(QFile::ReadOnly))
@@ -74,7 +81,7 @@ void TextEditor::saveFile()
 {
     if(openedFilePath.isEmpty())
     {
-        openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath());
+        openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath(), "Text files (*.txt)");
     }
 
     QFile file(openedFilePath);
@@ -96,7 +103,7 @@ void TextEditor::saveFile()
 
 void TextEditor::saveAs()
 {
-    openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath());
+    openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath(), "Text files (*.txt)");
 
     QFile file(openedFilePath);
     if(!file.open(QFile::WriteOnly))
@@ -147,7 +154,7 @@ void TextEditor::newFile()
         case QMessageBox::Save:
             if(openedFilePath.isEmpty())
             {
-                openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath());
+                openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath(), "Text files (*.txt)");
             }
 
             QFile file(openedFilePath);
@@ -171,6 +178,11 @@ void TextEditor::newFile()
     initialFileText = "";
 
     this->setWindowTitle(openedFileName + ": Text Editor");
+}
+
+void TextEditor::changeFont()
+{
+    TextEdit->setFont(QFontDialog::getFont(0, TextEdit->font()));
 }
 
 TextEditor::~TextEditor()
