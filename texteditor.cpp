@@ -21,11 +21,25 @@ TextEditor::TextEditor(QWidget *parent)
     QAction *saveAs = new QAction("Save As…", this);
     QAction *exit = new QAction("Exit", this);
 
+    QAction *undo = new QAction("Undo", this);
+    QAction *redu = new QAction("Redu", this);
+    QAction *cut = new QAction("Cut", this);
+    QAction *copy = new QAction("Copy", this);
+    QAction *paste = new QAction("Paste", this);
+    QAction *selectAll = new QAction("Select all", this);
+
     QAction *font = new QAction("Font…", this);
 
     _new->setShortcut(tr("CTRL+N"));
     open->setShortcut(tr("CTRL+O"));
     save->setShortcut(tr("CTRL+S"));
+
+    undo->setShortcut(tr("CTRL+Z"));
+    redu->setShortcut(tr("CTRL+Y"));
+    cut->setShortcut(tr("CTRL+X"));
+    copy->setShortcut(tr("CTRL+C"));
+    paste->setShortcut(tr("CTRL+V"));
+    selectAll->setShortcut(tr("CTRL+A"));
 
     QMenu *file = menuBar()->addMenu("File");
     file->addAction(_new);
@@ -34,6 +48,17 @@ TextEditor::TextEditor(QWidget *parent)
     file->addAction(saveAs);
     file->addSeparator();
     file->addAction(exit);
+
+
+    QMenu *edit = menuBar()->addMenu("Edit");
+    edit->addAction(undo);
+    edit->addAction(redu);
+    edit->addSeparator();
+    edit->addAction(cut);
+    edit->addAction(copy);
+    edit->addAction(paste);
+    edit->addSeparator();
+    edit->addAction(selectAll);
 
     QMenu *format = menuBar()->addMenu("Format");
     format->addAction(font);
@@ -46,6 +71,13 @@ TextEditor::TextEditor(QWidget *parent)
     connect(saveAs, &QAction::triggered, this, &TextEditor::saveAs);
     connect(exit, &QAction::triggered, this, &QApplication::quit);
     connect(TextEdit, &QPlainTextEdit::textChanged, this, &TextEditor::textChanged);
+
+    connect(undo, &QAction::triggered, TextEdit, &QPlainTextEdit::undo);
+    connect(redu, &QAction::triggered, TextEdit, &QPlainTextEdit::redo);
+    connect(cut, &QAction::triggered, TextEdit, &QPlainTextEdit::cut);
+    connect(copy, &QAction::triggered, TextEdit, &QPlainTextEdit::copy);
+    connect(paste, &QAction::triggered, TextEdit, &QPlainTextEdit::paste);
+    connect(selectAll, &QAction::triggered, TextEdit, &QPlainTextEdit::selectAll);
 
     connect(font, &QAction::triggered, this, &TextEditor::changeFont);
 
@@ -62,7 +94,6 @@ void TextEditor::OpenFile()
     QFile file(openedFilePath);
     if(!file.open(QFile::ReadOnly))
     {
-        //QMessageBox::warning(this, "Warning", "Can't open the file: " + openedFileName);
         return;
     }
 
