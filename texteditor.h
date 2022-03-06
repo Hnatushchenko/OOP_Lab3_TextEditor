@@ -11,8 +11,9 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QDir>
-#include <QFont>
 #include <QFontDialog>
+#include <QtPrintSupport/QPrintDialog>
+#include <QtPrintSupport/QPrinter>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class TextEditor; }
@@ -35,11 +36,14 @@ private:
     QPlainTextEdit * TextEdit;
 
 private slots:
+    void newFile();
     void OpenFile();
     void saveFile();
     void saveAs();
+    void printFile();
+
     void textChanged();
-    void newFile();
+
 
     void changeFont();
 };

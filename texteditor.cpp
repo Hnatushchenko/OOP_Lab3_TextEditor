@@ -19,6 +19,7 @@ TextEditor::TextEditor(QWidget *parent)
     QAction *open = new QAction("Open…", this);
     QAction *save = new QAction("Save", this);
     QAction *saveAs = new QAction("Save As…", this);
+    QAction *print = new QAction("Print…", this);
     QAction *exit = new QAction("Exit", this);
 
     QAction *undo = new QAction("Undo", this);
@@ -33,6 +34,7 @@ TextEditor::TextEditor(QWidget *parent)
     _new->setShortcut(tr("CTRL+N"));
     open->setShortcut(tr("CTRL+O"));
     save->setShortcut(tr("CTRL+S"));
+    print->setShortcut(tr("CTRL+P"));
 
     undo->setShortcut(tr("CTRL+Z"));
     redu->setShortcut(tr("CTRL+Y"));
@@ -46,6 +48,8 @@ TextEditor::TextEditor(QWidget *parent)
     file->addAction(open);
     file->addAction(save);
     file->addAction(saveAs);
+    file->addSeparator();
+    file->addAction(print);
     file->addSeparator();
     file->addAction(exit);
 
@@ -69,6 +73,7 @@ TextEditor::TextEditor(QWidget *parent)
     connect(open, &QAction::triggered, this, &TextEditor::OpenFile);
     connect(save, &QAction::triggered, this, &TextEditor::saveFile);
     connect(saveAs, &QAction::triggered, this, &TextEditor::saveAs);
+    connect(print, &QAction::triggered, this, &TextEditor::printFile);
     connect(exit, &QAction::triggered, this, &QApplication::quit);
     connect(TextEdit, &QPlainTextEdit::textChanged, this, &TextEditor::textChanged);
 
@@ -150,6 +155,16 @@ void TextEditor::saveAs()
     this->setWindowTitle(openedFileName + ": Text Editor");
 
     file.close();
+}
+
+void TextEditor::printFile()
+{
+    QPrinter printer;
+    QPrintDialog pDialog(&printer, this);
+
+    if(pDialog.exec() == QDialog::Rejected) return;
+
+    TextEdit->print(&printer);
 }
 
 void TextEditor::textChanged()
