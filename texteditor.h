@@ -5,13 +5,14 @@
 #include <QWidget>
 #include <QMenu>
 #include <QMenuBar>
-#include <QPlainTextEdit>
+#include <QTextEdit>
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
 #include <QDir>
 #include <QFontDialog>
+#include <QColorDialog>
 #include <QtPrintSupport/QPrintDialog>
 #include <QtPrintSupport/QPrinter>
 
@@ -33,7 +34,7 @@ private:
     QString initialFileText;
 
     Ui::TextEditor *ui;
-    QPlainTextEdit * TextEdit;
+    QTextEdit * TextEdit;
 
 private slots:
     void newFile();
@@ -46,5 +47,6 @@ private slots:
 
 
     void changeFont();
+    void changeColor();
 };
 #endif // TEXTEDITOR_H
