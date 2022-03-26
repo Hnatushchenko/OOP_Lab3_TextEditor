@@ -28,9 +28,11 @@ TextEditor::TextEditor(QWidget *parent)
     QAction *copy = new QAction("Copy", this);
     QAction *paste = new QAction("Paste", this);
     QAction *selectAll = new QAction("Select all", this);
+    QAction *find = new QAction("Find", this);
+    QAction *findAndReplace = new QAction("Find and replace", this);
+
 
     QAction *font = new QAction("Font…", this);
-    QAction *color = new QAction("Color…", this);
 
     _new->setShortcut(tr("CTRL+N"));
     open->setShortcut(tr("CTRL+O"));
@@ -64,10 +66,11 @@ TextEditor::TextEditor(QWidget *parent)
     edit->addAction(paste);
     edit->addSeparator();
     edit->addAction(selectAll);
+    edit->addAction(find);
+    edit->addAction(findAndReplace);
 
     QMenu *format = menuBar()->addMenu("Format");
     format->addAction(font);
-    format->addAction(color);
 
     QVBoxLayout *vbox = new QVBoxLayout(this);
 
@@ -86,9 +89,21 @@ TextEditor::TextEditor(QWidget *parent)
     connect(copy, &QAction::triggered, TextEdit, &QTextEdit::copy);
     connect(paste, &QAction::triggered, TextEdit, &QTextEdit::paste);
     connect(selectAll, &QAction::triggered, TextEdit, &QTextEdit::selectAll);
+    connect(find, &QAction::triggered, this, &TextEditor::find);
+    connect(findAndReplace, &QAction::triggered, this, &TextEditor::findAndReplace);
 
     connect(font, &QAction::triggered, this, &TextEditor::changeFont);
-    connect(color, &QAction::triggered, this, &TextEditor::changeColor);
+
+    connect(TextEdit, &QTextEdit::cursorPositionChanged, this, [this]()
+    {
+        QTextCharFormat fmt;
+        fmt.setBackground(Qt::white);
+
+        QTextCursor cursor(TextEdit->document());
+        cursor.setPosition(0, QTextCursor::MoveAnchor);
+        cursor.setPosition(TextEdit->toPlainText().length(), QTextCursor::KeepAnchor);
+        cursor.setCharFormat(fmt);
+    });
 
     vbox->addWidget(TextEdit);
     QWidget *centralWidget = new QWidget;
@@ -98,7 +113,7 @@ TextEditor::TextEditor(QWidget *parent)
 
 void TextEditor::OpenFile()
 {
-    openedFilePath = QFileDialog::getOpenFileName(this, "Opening", QDir::homePath(), "Text files (*.txt)");
+    openedFilePath = QFileDialog::getOpenFileName(this, "Opening", QDir::homePath(), "Text Documents (*.txt);;All Files (*.*)");
 
     QFile file(openedFilePath);
     if(!file.open(QFile::ReadOnly))
@@ -121,7 +136,7 @@ void TextEditor::saveFile()
 {
     if(openedFilePath.isEmpty())
     {
-        openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath(), "Text files (*.txt)");
+        openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath(), "Text Documents (*.txt);;All Files (*.*)");
     }
 
     QFile file(openedFilePath);
@@ -143,7 +158,7 @@ void TextEditor::saveFile()
 
 void TextEditor::saveAs()
 {
-    openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath(), "Text files (*.txt)");
+    openedFilePath = QFileDialog::getSaveFileName(this, "Save File", QDir::homePath(), "Text Documents (*.txt);;All Files (*.*)");
 
     QFile file(openedFilePath);
     if(!file.open(QFile::WriteOnly))
@@ -230,51 +245,104 @@ void TextEditor::newFile()
     this->setWindowTitle(openedFileName + ": Text Editor");
 }
 
+void TextEditor::findAndReplace()
+{
+    QWidget *findAndReplaceDialogWindow = new QWidget;
+    findAndReplaceDialogWindow->setWindowTitle("Find and replace");
+    findAndReplaceDialogWindow->setMinimumWidth(330);
+
+    QVBoxLayout *vbox = new QVBoxLayout(findAndReplaceDialogWindow);
+    QFormLayout *form = new QFormLayout(findAndReplaceDialogWindow);
+    form->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    QLineEdit *findEdit = new QLineEdit(findAndReplaceDialogWindow);
+    QLineEdit *replaceEdit = new QLineEdit(findAndReplaceDialogWindow);
+    form->addRow("Find:", findEdit);
+    form->addRow("Replace with:", replaceEdit);
+
+    QPushButton *button = new QPushButton(findAndReplaceDialogWindow);
+    button->setText("Replace all");
+
+    connect(button, &QPushButton::clicked, this, [=](){
+        QString textBefore = TextEdit->toPlainText();
+        TextEdit->setPlainText(textBefore.replace(findEdit->text(), replaceEdit->text()));
+          delete form;
+          delete vbox;
+          delete findEdit;
+          delete replaceEdit;
+          delete button;
+          delete findAndReplaceDialogWindow;
+    });
+
+    vbox->addLayout(form);
+    vbox->addWidget(button);
+
+    findAndReplaceDialogWindow->show();
+}
+
+void TextEditor::find()
+{
+    QWidget *findDialogWindow = new QWidget;
+    findDialogWindow->setWindowTitle("Find");
+    findDialogWindow->setMinimumWidth(260);
+
+    QVBoxLayout *vbox = new QVBoxLayout(findDialogWindow);
+    QFormLayout *form = new QFormLayout(findDialogWindow);
+    form->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    QLineEdit *findEdit = new QLineEdit(findDialogWindow);
+
+    form->addRow("Find:", findEdit);
+
+
+    QPushButton *button = new QPushButton(findDialogWindow);
+    button->setText("Find");
+
+    connect(button, &QPushButton::clicked, this,
+                   [this, findEdit]() {
+                        QTextCharFormat fmt;
+                        fmt.setBackground(Qt::white);
+
+                        QTextCursor cursor(TextEdit->document());
+                        cursor.setPosition(0, QTextCursor::MoveAnchor);
+                        cursor.setPosition(TextEdit->toPlainText().length(), QTextCursor::KeepAnchor);
+                        cursor.setCharFormat(fmt);
+
+                        int end = 0;
+                        QString text = this->TextEdit->toPlainText();
+                        for(int i = 0; i < text.count(findEdit->text()); ++i)
+                        {
+                            int begin = text.indexOf(findEdit->text(), end);
+                            if (begin != -1)
+                            {
+                                end = begin + findEdit->text().size();
+
+                                QTextCharFormat fmt;
+                                fmt.setBackground(QColor::fromRgb(0, 120, 215));
+
+                                QTextCursor cursor(TextEdit->document());
+                                cursor.setPosition(begin, QTextCursor::MoveAnchor);
+                                cursor.setPosition(end, QTextCursor::KeepAnchor);
+                                cursor.setCharFormat(fmt);
+                            }
+                        }
+                   });
+
+    vbox->addLayout(form);
+    vbox->addWidget(button);
+
+    findDialogWindow->show();
+}
+
 void TextEditor::changeFont()
 {
     TextEdit->setFont(QFontDialog::getFont(0, TextEdit->font()));
-}
-
-void TextEditor::changeColor()
-{
-    TextEdit->setTextColor(QColorDialog::getColor());
 }
 
 TextEditor::~TextEditor()
 {
     delete ui;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

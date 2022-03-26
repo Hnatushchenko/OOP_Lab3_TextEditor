@@ -7,6 +7,10 @@
 #include <QMenuBar>
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <QFormLayout>
+#include <QLineEdit>
+#include <QtWidgets>
+#include <QPushButton>
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
@@ -45,8 +49,8 @@ private slots:
 
     void textChanged();
 
-
+    void find();
+    void findAndReplace();
     void changeFont();
-    void changeColor();
 };
 #endif // TEXTEDITOR_H
